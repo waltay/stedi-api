@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: redis-stedi-sean
+  name: redis-stedi-walter
 spec:
   selector:
     matchLabels:
-      app: redis-stedi-sean  # has to match .spec.template.metadata.labels
-  serviceName: redis-stedi-sean
+      app: redis-stedi-walter  # has to match .spec.template.metadata.labels
+  serviceName: redis-stedi-walter
   replicas: 1
   template:
     metadata:
       labels:
-        app: redis-stedi-sean  # has to match .spec.selector.matchLabels
+        app: redis-stedi-walter  # has to match .spec.selector.matchLabels
     spec:
       containers:
-        - name: redis-stedi-sean
+        - name: redis-stedi-walter
           image: redis:7.0.5-alpine
           imagePullPolicy: Always
           args: ["--requirepass", "$(REDIS_PASS)", "--appendonly", "yes", "--save", "900", "1", "--save", "30", "2"]
@@ -25,14 +25,14 @@ spec:
           - name: REDIS_PASS
             valueFrom:
               secretKeyRef:
-                name: redis-secrets-sean
+                name: redis-secrets-walter
                 key: REDIS_PASS
           volumeMounts:
-            - name: redis-sean-volume
+            - name: redis-walter-volume
               mountPath: /data
   volumeClaimTemplates:
   - metadata:
-      name: redis-sean-volume
+      name: redis-walter-volume
     spec:
       accessModes:
         - ReadWriteOnce
@@ -43,11 +43,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: redis-stedi-sean
+  name: redis-stedi-walter
 spec:
   ports:
     - port: 6379
       name: redis
   clusterIP: None
   selector:
-    app: redis-stedi-sean
+    app: redis-stedi-walter
